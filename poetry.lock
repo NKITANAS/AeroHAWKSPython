@@ -36,6 +36,22 @@ files = [
 ]
 
 [[package]]
+name = "lorarf"
+version = "1.4.0"
+description = "Python library used for basic transmitting and receiving data using LoRa modem"
+optional = false
+python-versions = ">=2.7"
+groups = ["main"]
+files = [
+    {file = "LoRaRF-1.4.0-py3-none-any.whl", hash = "sha256:8c2a918dacbdd255cefca61a91af5518e9997128083f7015114139ea14bc3c96"},
+    {file = "LoRaRF-1.4.0.tar.gz", hash = "sha256:ac28e7d5adebfc176b7d9d0cf70a0ad8627f589c3f808664d2fce2c64f0ac9b5"},
+]
+
+[package.dependencies]
+"RPi.GPIO" = "*"
+spidev = "*"
+
+[[package]]
 name = "mpu6050-raspberrypi"
 version = "1.2"
 description = "A Python module for accessing the MPU-6050 digital accelerometer and gyroscope on a Raspberry Pi."
@@ -47,7 +63,49 @@ files = [
     {file = "mpu6050_raspberrypi-1.2-py3-none-any.whl", hash = "sha256:89c7dc3e16904ffe9eb2d6b64d464477cbcc00f4640cd563519eefb1d16cf1ba"},
 ]
 
+[[package]]
+name = "rpi-gpio"
+version = "0.7.1"
+description = "A module to control Raspberry Pi GPIO channels"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "RPi.GPIO-0.7.1-cp27-cp27mu-linux_armv6l.whl", hash = "sha256:b86b66dc02faa5461b443a1e1f0c1d209d64ab5229696f32fb3b0215e0600c8c"},
+    {file = "RPi.GPIO-0.7.1-cp310-cp310-linux_armv6l.whl", hash = "sha256:57b6c044ef5375a78c8dda27cdfadf329e76aa6943cd6cffbbbd345a9adf9ca5"},
+    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:77afb817b81331ce3049a4b8f94a85e41b7c404d8e56b61ac0f1eb75c3120868"},
+    {file = "RPi.GPIO-0.7.1-cp38-cp38-linux_armv6l.whl", hash = "sha256:29226823da8b5ccb9001d795a944f2e00924eeae583490f0bc7317581172c624"},
+    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:15311d3b063b71dee738cd26570effc9985a952454d162937c34e08c0fc99902"},
+    {file = "RPi.GPIO-0.7.1.tar.gz", hash = "sha256:cd61c4b03c37b62bba4a5acfea9862749c33c618e0295e7e90aa4713fb373b70"},
+]
+
+[[package]]
+name = "smbus"
+version = "1.1.post2"
+description = "Python bindings for Linux SMBus access through i2c-dev"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "smbus-1.1.post2-cp27-cp27mu-linux_armv7l.whl", hash = "sha256:529f9effc383b6381534d1d845eaf1078bdd2d4e625c945b23cf274d5cf1c306"},
+    {file = "smbus-1.1.post2-cp34-cp34m-linux_armv7l.whl", hash = "sha256:39923448455a41c6bbe823de62b191103dd711917056362d9e4b1d2c6ec0f06d"},
+    {file = "smbus-1.1.post2-cp35-cp35m-linux_armv7l.whl", hash = "sha256:b467235734ae5c147c4ec0eff1afb9dba189d9d3cc086ed7e0d3dbf0ae485230"},
+    {file = "smbus-1.1.post2.tar.gz", hash = "sha256:f96d345e0aa10053a8a4917634f1dc37ba1f656fa5cace7629b71777e90855c6"},
+]
+
+[[package]]
+name = "spidev"
+version = "3.8"
+description = "Python bindings for Linux SPI access through spidev"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "spidev-3.8-cp39-cp39-linux_armv7l.whl", hash = "sha256:07d0da112ca944df41f080811bb123b910df63bb38b66712289bc4fd9d682185"},
+    {file = "spidev-3.8.tar.gz", hash = "sha256:2bc02fb8c6312d519ebf1f4331067427c0921d3f77b8bcaf05189a2e8b8382c0"},
+]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14"
-content-hash = "a3006c4651db9711b89c556dc7b383792924a1d3835828896541f4b2877a5f5c"
+content-hash = "94e3a8138dfb783676b1d27cd4fd8038f0c973cd90f5df752e9c6ed36f61bec0"

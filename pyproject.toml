@@ -9,7 +9,9 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "gpiod (>=2.4.0,<3.0.0)",
-    "mpu6050-raspberrypi (>=1.2,<2.0)"
+    "mpu6050-raspberrypi (>=1.2,<2.0)",
+    "lorarf (>=1.4.0,<2.0.0)",
+    "smbus (>=1.1.post2,<2.0)"
 ]
 
 [tool.poetry]
