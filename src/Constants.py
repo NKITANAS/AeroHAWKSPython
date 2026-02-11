@@ -12,7 +12,7 @@ LINEAR_ACTUATOR_R_PIN_1 = gpiochip.get_line(3)
 LINEAR_ACTUATOR_R_PIN_2 = gpiochip.get_line(4)
 
 # Stepper Motor - numbers are subject to change
-STEPPER_MOTOR_DIR_PIN = gpiochip.get_line(5)
+STEPPER_MOTOR_DIR_PIN  = gpiochip.get_line(5)
 STEPPER_MOTOR_STEP_PIN = gpiochip.get_line(6)
 
 # IMU - numbers are subject to change

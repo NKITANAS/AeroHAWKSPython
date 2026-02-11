@@ -11,3 +11,6 @@ class IMU:
     
     def get_gyroscope_data(self):
         return self.IMU.get_gyro_data()
+    
+    def get_temperature_data(self):
+        return self.IMU.get_temp()

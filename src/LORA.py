@@ -33,7 +33,7 @@ class LORA:
         while self.Lora.available() > 1 :
             message += chr(self.Lora.read())          # read multiple bytes
             counter = self.Lora.read()                # read single byte
-        return counter
+        return message
     
     # Transmit Function
     def transmit(self, message):

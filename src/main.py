@@ -6,16 +6,68 @@ import IMU
 import LinearActuators
 import LORA
 import StepperMotor
+from enum import Enum
+
+# Instantiate the classes
+imu             = IMU.IMU()
+linearactuators = LinearActuators.LinearActuators()
+lora            = LORA.LORA()
+steppermotor    = StepperMotor.StepperMotor()
+
+# Create enum for flight stages
+class FlightStage(Enum):
+    TAKEOFF = 0
+    DRIFT   = 1
+    DROGUE  = 2
+    MAIN    = 3
+    LAND    = 4
+    MEASURE = 5
 
 def main():
-    # Create a new GPIO chip object for the specified chip name
-    chip = gpiod.Chip('gpiochip0')
+    state = FlightStage.TAKEOFF
+    while True:
+        newstage = False
 
-    # Request a line for output and set its initial value to 0 (low)
-    line = chip.get_line(17)
-    line.request(consumer='my-consumer', type=gpiod.LINE_REQ_DIR_OUT, default_vals=[0])
+        temperature   = imu.get_temperature_data()
+        gyroscope     = imu.get_gyroscope_data()
+        accelerometer = imu.get_accelerometer_data()
 
-    # Set the line value to 1 (high)
-    line.set_value(1)
+        # Transmit to know that LoRa system is working
+        lora.transmit("000:1")
+
+
+        if state == FlightStage.TAKEOFF:
+
+            if newstage:
+                # Inform the Ground Station about stage change
+                lora.transmit(f"001:{state}")
+
+            # Transmit Temp Data
+            lora.transmit(f"002:{temperature}")
+
+        if state == FlightStage.DRIFT:
+
+            if newstage:
+                # Inform the Ground Station about stage change
+                lora.transmit(f"001:{state}")
+
+        if state == FlightStage.DROGUE:
+
+            if newstage:
+                # Inform the Ground Station about stage change
+                lora.transmit(f"001:{state}")
+
+        if state == FlightStage.MAIN:
+
+            if newstage:
+                # Inform the Ground Station about stage change
+                lora.transmit(f"001:{state}")
+
+        if state == FlightStage.LAND:
+
+            if newstage:
+                # Inform the Ground Station about stage change
+                lora.transmit(f"001:{state}")
+            
 
 main()

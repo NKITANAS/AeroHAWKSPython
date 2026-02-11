@@ -12,7 +12,7 @@ class Windows(Enum):
 class StepperMotor:
     # Initialize the stepper motor control pins
     def __init__(self):
-        self.dir_pin = Constants.STEPPER_MOTOR_DIR_PIN
+        self.dir_pin  = Constants.STEPPER_MOTOR_DIR_PIN
         self.step_pin = Constants.STEPPER_MOTOR_STEP_PIN
 
         self.dir_pin.request(consumer='stepper-motor', type=gpiod.LINE_REQ_DIR_OUT, default_vals=[0])
