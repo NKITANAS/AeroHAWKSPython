@@ -24,7 +24,7 @@ class LORA:
         self.Lora.setSyncWord(0x3444)
     
     # Recieve Function
-    def recieve(self):
+    def recieve(self) -> str:
         self.Lora.request()
         self.Lora.wait()
 
@@ -36,7 +36,7 @@ class LORA:
         return message
     
     # Transmit Function
-    def transmit(self, message):
+    def transmit(self, message) -> None:
         # message and counter to transmit
         messageList = list(message)
         for i in range(len(messageList)) : messageList[i] = ord(messageList[i])
@@ -44,7 +44,7 @@ class LORA:
 
         self.Lora.beginPacket()
         self.Lora.write(message, len(message)) # write multiple bytes
-        self.Lora.write(counter)                  # write single byte
+        self.Lora.write(counter)               # write single byte
         self.Lora.endPacket()
         self.Lora.wait()
         counter += 1

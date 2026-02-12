@@ -1,14 +1,14 @@
 # AeroHAWKS 2026 Payload Code, Written in Python
 Code for the HVA AeroHAWKs NASA Student Launch 2025-2026 Payload Experiment.
 ## Payload Functions
-This payload code runs on a raspberry Pi 4, Equipped with a LoRa HAT.
+This payload code runs on a raspberry Pi 4, Equipped with a LoRa HAT to transmit data.
 This Payload can:
 * Transmit Data to a ground station via LoRa
 * Extend it's soil probes and measure ground moisture data upon landing
-* Detect when it lands using an accelerometer.
+* Detect different stages of flight with an accelerometer
 ## How to run
 On a Raspberry Pi:
-1. If python cannot be updated to a version higher than 3.14 via apt, build it from souce.
+1. If python cannot be updated to a version higher than 3.14 via apt, build it from source.
 2. Install [poetry](https://python-poetry.org/)
 3. Run  the following commands to clone the repo:  
 ```bash
