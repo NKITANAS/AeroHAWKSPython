@@ -28,13 +28,11 @@ class Status(Enum):
 def main():
     turn_on_signal_received: bool = False
     # Wait for the "Turn On" signal from the ground station before starting the main loop
-    """
     while not turn_on_signal_received:
         message = lora.recieve()
         if message == "100:1":
             turn_on_signal_received = True
             print("STATUS: Turn On Recieved")
-    """
     # Init
     start_time          = datetime.datetime.now()
     start_height: float = 0.00 # MAJOR TODO: Altimiter
@@ -58,7 +56,7 @@ def main():
 
         # IMU data
         accelerometer_data: dict = pico.read_accelerometer()
-        gyroscope_data:     dict = pico.read_gyroscope
+        gyroscope_data:     dict = pico.read_gyroscope()
 
         orientation += (gyroscope_data['x']) * (time - old_time) # For deciding optimal window, might have to use y instead depending on sensor orient
 
@@ -77,7 +75,7 @@ def main():
         elif accelerometer_data['z'] < -1.0: # MAJOR TODO: Tune this threshold
             status = Status.DESCENT
 
-        elif abs(accelerometer_data['z']) <= 0.5 and height <= start_height + 30 and status != Status.IDLE: # MAJOR TODO: Tune this threshold
+        elif accelerometer_data['z'] == 0.0 and height <= start_height + 20 and status != Status.IDLE: # MAJOR TODO: Tune this threshold
             status = Status.LANDED # MAJOR TODO: Make sure through testing that this condition is sufficient to determine landing
             sleep(5) # Sleep for 5 seconds to ensure that the payload fully lands
         
