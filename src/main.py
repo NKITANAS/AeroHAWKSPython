@@ -4,6 +4,7 @@ import Constants
 import LORA
 import Pico
 
+# Instantiate the classes
 pico = Pico.Pico()
 lora = LORA.LORA()
 
@@ -14,50 +15,57 @@ except IOError as e:
     logfile = None
 
 def main():
-    print("STATUS: System starting in Full-Duplex Polling mode...")
+    print("--- System Active (Press Ctrl+C to stop) ---")
 
     while True:
         try:
-            # --- PHASE 1: RECEIVE FROM LORA ---
-            incoming_lora = lora.receive()
+            # 1. Check for incoming LORA commands (from Ground Station)
+            incoming_lora = lora.check_for_message()
+            
             if incoming_lora:
-                print(f"LORA_IN: {incoming_lora}")
-                
-                # Logic: Check for PING, otherwise forward to Pico
-                if incoming_lora.strip().upper() == "PING":
-                    print("STATUS: Received PING, sending PONG")
+                clean_msg = incoming_lora.strip().upper()
+                print(f"RX LORA: {incoming_lora}")
+
+                if clean_msg == "PING":
+                    print("ACTION: Responding to PING with PONG")
                     lora.transmit("PONG")
                 else:
-                    print(f"STATUS: Forwarding LoRa message to Pico")
+                    print("ACTION: Forwarding command to Pico")
                     pico.write_data(incoming_lora)
 
-            # --- PHASE 2: RECEIVE FROM PICO & TRANSMIT ---
+            # 2. Check for incoming PICO data (Sensors)
             pico_data = pico.read_data()
+            
             if pico_data:
-                print(f"PICO_IN: {pico_data}")
+                print(f"RX PICO: {pico_data}")
                 
                 # Transmit sensor data via LoRa
                 if lora.transmit(pico_data):
-                    print("STATUS: LoRa Transmission Successful")
+                    print("TX LORA: Data sent successfully")
                 
-                # Log the data
+                # Log the data locally
                 if logfile:
-                    logfile.write(f"{datetime.datetime.now()}: {pico_data}\n")
+                    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    logfile.write(f"{timestamp}: {pico_data}\n")
                     logfile.flush()
-            
-            # Small delay to prevent 100% CPU usage
-            sleep(0.05)
+
+            # 3. Prevent CPU spiking (Adjust 0.01 to 0.05 depending on required latency)
+            sleep(0.01)
             
         except KeyboardInterrupt:
-            print("\nSTATUS: Shutting down...")
+            print("\nSTATUS: Shutting down gracefully...")
             break
         except Exception as e:
-            print(f"ERROR: Main loop failure: {e}")
-            sleep(1)
+            print(f"CRITICAL ERROR in main loop: {e}")
+            sleep(1) # Pause briefly on error before retrying
 
     # Cleanup
-    if logfile: logfile.close()
+    if logfile:
+        logfile.close()
     pico.close()
 
-if not Constants.TEST_MODE:
-    main()
+if __name__ == "__main__":
+    if not Constants.TEST_MODE:
+        main()
+    else:
+        print("Test mode enabled. Main loop bypassed.")
