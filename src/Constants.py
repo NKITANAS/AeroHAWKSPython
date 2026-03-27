@@ -1,5 +1,5 @@
 # Test Mode #
-TEST_MODE: bool = True
+TEST_MODE: bool = False
 
 # Pico
 PICO_SERIAL_PORT: str = '/dev/serial0'
