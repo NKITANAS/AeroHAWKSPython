@@ -1,68 +1,63 @@
 from time import sleep
 import datetime
-
 import Constants
 import LORA
 import Pico
 
-from enum import Enum
+pico = Pico.Pico()
+lora = LORA.LORA()
 
-# Instantiate the classes
-pico            = Pico.Pico()
-lora            = LORA.LORA()
 try:
-    logfile = open(Constants.LOG_FILE_PATH, 'a')  # Open log file in append mode
+    logfile = open(Constants.LOG_FILE_PATH, 'a')
 except IOError as e:
     print(f"Error opening log file: {e}")
     logfile = None
 
-class Status(Enum):
-    IDLE = 1
-    ASCENT = 2
-    DESCENT = 3
-    LANDED = 4
-
-
 def main():
-    turn_on_signal_received: bool = False
-    # Wait for the "Turn On" signal from the ground station before starting the main loop
-    #while not turn_on_signal_received:
-    #    message = lora.receive()
-    #    if message == "100:1":
-    #        turn_on_signal_received = True
-    #        print("STATUS: Turn On Received")
-    # Init
-    start_time = datetime.datetime.now()
+    print("STATUS: System starting in Full-Duplex Polling mode...")
 
-    # Main loop
     while True:
         try:
-            # Read data from the Pico
+            # --- PHASE 1: RECEIVE FROM LORA ---
+            incoming_lora = lora.receive()
+            if incoming_lora:
+                print(f"LORA_IN: {incoming_lora}")
+                
+                # Logic: Check for PING, otherwise forward to Pico
+                if incoming_lora.strip().upper() == "PING":
+                    print("STATUS: Received PING, sending PONG")
+                    lora.transmit("PONG")
+                else:
+                    print(f"STATUS: Forwarding LoRa message to Pico")
+                    pico.write_data(incoming_lora)
+
+            # --- PHASE 2: RECEIVE FROM PICO & TRANSMIT ---
             pico_data = pico.read_data()
             if pico_data:
-                print(f"STATUS: Received data from Pico: {pico_data}")
-                success = lora.transmit(pico_data)
-                if success:
-                    print(f"STATUS: Successfully transmitted data")
+                print(f"PICO_IN: {pico_data}")
+                
+                # Transmit sensor data via LoRa
+                if lora.transmit(pico_data):
+                    print("STATUS: LoRa Transmission Successful")
+                
+                # Log the data
                 if logfile:
-                    logfile.write(f"{datetime.datetime.now()}: {pico_data}\n")  # Log the data with a timestamp
-                    logfile.flush()  # Ensure data is written to the file immediately
+                    logfile.write(f"{datetime.datetime.now()}: {pico_data}\n")
+                    logfile.flush()
             
-            # Sleep for a short period to avoid overwhelming the CPU
-            sleep(0.1)
+            # Small delay to prevent 100% CPU usage
+            sleep(0.05)
             
         except KeyboardInterrupt:
-            print("\nSTATUS: Shutting down gracefully...")
-            if logfile:
-                logfile.close()
-            pico.close()
+            print("\nSTATUS: Shutting down...")
             break
         except Exception as e:
-            print(f"ERROR: Unexpected error in main loop: {e}")
-            sleep(1)  # Wait a bit longer on errors
+            print(f"ERROR: Main loop failure: {e}")
+            sleep(1)
 
+    # Cleanup
+    if logfile: logfile.close()
+    pico.close()
 
 if not Constants.TEST_MODE:
     main()
-else:
-    pass
