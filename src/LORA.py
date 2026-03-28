@@ -17,7 +17,8 @@ class LORA:
             
             self.counter = 0
             self.initialized = True
-            
+            self._listening = False
+
             # Start the initial listen request
             self.start_receiving()
             print("LoRa module initialized and listening at 915MHz")
@@ -25,11 +26,13 @@ class LORA:
             print(f"Error initializing LoRa module: {e}")
             self.Lora = None
             self.initialized = False
+            self._listening = False
 
     def start_receiving(self):
         """Non-blocking: tells the radio to start listening for a packet."""
         if self.initialized and self.Lora:
             self.Lora.request()
+            self._listening = True
 
     def check_for_message(self) -> str:
         """
@@ -38,10 +41,15 @@ class LORA:
         """
         if not self.initialized or not self.Lora:
             return ""
-            
+
+        # If the radio somehow left RX mode (e.g. after a timeout), re-enter it
+        if not self._listening:
+            self.start_receiving()
+
         try:
             # Only process if a packet is actually in the buffer
             if self.Lora.available() > 0:
+                self._listening = False
                 message = ""
                 # Read all bytes except the last (counter) byte
                 while self.Lora.available() > 1:
@@ -56,6 +64,8 @@ class LORA:
             return ""
         except Exception as e:
             print(f"Error in check_for_message: {e}")
+            self._listening = False
+            self.start_receiving()  # Re-enter RX mode on error
             return ""
     
     def transmit(self, message: str) -> bool:
@@ -64,6 +74,7 @@ class LORA:
             return False
             
         try:
+            self._listening = False  # Radio is now in TX mode
             message_list = [ord(char) for char in message]
 
             self.Lora.beginPacket()
